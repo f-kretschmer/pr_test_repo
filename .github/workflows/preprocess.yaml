@@ -33,7 +33,7 @@ jobs:
 
     - name: R (package) dependencies
       run: |
-        sudo apt-get install curl libgit2-dev
+        sudo apt-get install libcurl4-openssl-dev libgit2-dev
         sudo R CMD javareconf
 
     - name: Install R packages
