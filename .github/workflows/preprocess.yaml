@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        ref: ${{ github.head_ref }}
+        ref: ${{ github.event.pull_request.head.sha }}
 
     - id: files
       uses: jitterbit/get-changed-files@v1
