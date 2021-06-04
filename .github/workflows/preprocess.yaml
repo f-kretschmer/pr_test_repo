@@ -23,6 +23,23 @@ jobs:
     - id: filesfolders
       run: echo "::set-output name=files::$(for f in ${{ steps.files.outputs.all }}; do basename $(dirname $f); done | sort | uniq)"
 
+    - name: setup R
+      uses: r-lib/actions/setup-r@v1
+      with:
+        r-version: '3.5.3'
+
+    - name: install R packages
+      shell: Rscript {0}
+      run: |
+        install.packages("classyfireR")
+        install.packages("grid")
+        install.packages("gridExtra")
+        install.packages("rcdk")
+        install.packages("rinchi")
+        install.packages("tidyverse")
+        install.packages("treemapify")
+        install.packages("viridis")
+
     - name: standardize compounds
       run: Rscript scripts/R/compounds_standardize.R ${{ steps.filesfolders.outputs.files }}
 
