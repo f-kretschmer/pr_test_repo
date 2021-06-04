@@ -31,7 +31,7 @@ library(rinchi)
 # read the data and create tibble for data analysis
 # ==============================================================================
 # folders from command arguments -----------------------------------------------
-data_folders <- sapply(commandArgs(trailingOnly=TRUE), function(x) { paste('raw_data', x, sep='/')})
+data_folders <- file.path('raw_data', commandArgs(trailingOnly=TRUE))
 
 # read data  and perform standardization ----------------------------------------
 for(data_folder in data_folders) {

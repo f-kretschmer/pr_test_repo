@@ -23,9 +23,23 @@ jobs:
     - id: filesfolders
       run: echo "::set-output name=files::$(for f in ${{ steps.files.outputs.all }}; do basename $(dirname $f); done | sort | uniq)"
 
-    - name: preprocess
-      id: preprocessing
-      run: Rscript scripts/R/runScripts.R ${{ steps.filesfolders.outputs.files }}
+    - name: standardize compounds
+      run: Rscript scripts/R/compounds_standardize.R ${{ steps.filesfolders.outputs.files }}
+
+    - name: compounds classyfire classes
+      run: Rscript scripts/R/compounds_classyfire.R ${{ steps.filesfolders.outputs.files }}
+
+    - name: compounds descriptors
+      run: Rscript scripts/R/compounds_descriptors.R ${{ steps.filesfolders.outputs.files }}
+
+    - name: metadata standardization
+      run: Rscript scripts/R/metadata_standardize.R ${{ steps.filesfolders.outputs.files }}
+
+    - name: compounds overview
+      run: Rscript scripts/R/compounds_overview.R
+
+    - name: metadata overview
+      run: Rscript scripts/R/metadata_overview.R
 
     - name: commit preprocessing
       run: |

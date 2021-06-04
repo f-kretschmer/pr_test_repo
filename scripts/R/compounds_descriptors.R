@@ -30,7 +30,7 @@ library(rcdk)
 # read the data and create tibble for data analysis
 # ==============================================================================
 # folders from command arguments -----------------------------------------------
-data_folders <- sapply(commandArgs(trailingOnly=TRUE), function(x) { paste('processed_data', x, sep='/')})
+data_folders <- file.path('processed_data', commandArgs(trailingOnly=TRUE))
 
 
 # iterate through folder and add data to full_rt_data_canonical ----------------
