@@ -28,11 +28,16 @@ jobs:
       with:
         r-version: '3.5.3'
 
+    - name: R (package) dependencies
+      run: |
+        sudo apt-get install curl
+        sudo R CMD javareconf
+
     - name: install R packages
       shell: Rscript {0}
       run: |
+        install.packages("devtools")
         install.packages("classyfireR")
-        install.packages("grid")
         install.packages("gridExtra")
         install.packages("rcdk")
         install.packages("rinchi")
