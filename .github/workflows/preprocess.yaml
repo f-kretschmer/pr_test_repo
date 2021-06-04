@@ -11,59 +11,62 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'accepted for preprocessing')
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout fork repository
+      uses: actions/checkout@v2
       with:
          fetch-depth: 0
          repository: ${{github.event.pull_request.head.repo.full_name}}
 
 
-    - id: files
+    - name: Get changed files
+      id: files
       uses: Ana06/get-changed-files@v1.1
 
-    - id: filesfolders
+    - name: Get new/changed datasets
+      id: filesfolders
       run: echo "::set-output name=files::$(for f in ${{ steps.files.outputs.all }}; do basename $(dirname $f); done | sort | uniq)"
 
-    - name: setup R
-      uses: r-lib/actions/setup-r@v1
-      with:
-        r-version: '3.5.3'
+    # - name: Setup R
+    #   uses: r-lib/actions/setup-r@v1
+    #   with:
+    #     r-version: '3.5.3'
 
     - name: R (package) dependencies
       run: |
-        sudo apt-get install curl
+        sudo apt-get install curl libgit2-dev
         sudo R CMD javareconf
 
-    - name: install R packages
+    - name: Install R packages
       shell: Rscript {0}
       run: |
+        install.packages("usethis")
         install.packages("devtools")
-        install.packages("classyfireR")
+        devtools::install_github("https://github.com/aberHRML/classyfireR")
         install.packages("gridExtra")
         install.packages("rcdk")
-        install.packages("rinchi")
+        devtools::install_github("https://github.com/CDK-R/rinchi")
         install.packages("tidyverse")
-        install.packages("treemapify")
         install.packages("viridis")
 
-    - name: standardize compounds
+    - name: Standardize compounds
       run: Rscript scripts/R/compounds_standardize.R ${{ steps.filesfolders.outputs.files }}
 
-    - name: compounds classyfire classes
+    - name: Compounds classyfire classes
       run: Rscript scripts/R/compounds_classyfire.R ${{ steps.filesfolders.outputs.files }}
 
-    - name: compounds descriptors
+    - name: Compounds descriptors
       run: Rscript scripts/R/compounds_descriptors.R ${{ steps.filesfolders.outputs.files }}
 
-    - name: metadata standardization
+    - name: Metadata standardization
       run: Rscript scripts/R/metadata_standardize.R ${{ steps.filesfolders.outputs.files }}
 
-    - name: compounds overview
+    - name: Compounds overview
       run: Rscript scripts/R/compounds_overview.R
 
-    - name: metadata overview
+    - name: Metadata overview
       run: Rscript scripts/R/metadata_overview.R
 
-    - name: commit preprocessing
+    - name: Commit preprocessing
       run: |
         git config --global user.email 'actions@github.com'
         git config --global user.name 'Github Actions'
@@ -71,7 +74,7 @@ jobs:
         git commit -m "Preprocessing ${{ steps.filesfolders.outputs.files }}"
         git push origin HEAD
 
-    - name: label as successfully preprocessed
+    - name: Label as successfully preprocessed
       if: ${{ success() }}
       uses: actions/github-script@v3
       with:
@@ -83,7 +86,7 @@ jobs:
                 labels: ['preprocessing successful']
               })
 
-    - name: label failed
+    - name: Label as failed
       if: ${{ failure() }}
       uses: actions/github-script@v3
       with:
