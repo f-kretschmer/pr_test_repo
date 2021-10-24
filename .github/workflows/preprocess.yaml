@@ -86,6 +86,10 @@ jobs:
                 labels: ['preprocessing successful']
               })
 
+    - name: Debug with tmate on failure
+      if: ${{ failure() }}
+      uses: mxschmitt/action-tmate@v3
+
     - name: Label as failed
       if: ${{ failure() }}
       uses: actions/github-script@v3
