@@ -137,14 +137,14 @@ for(data_folder in data_folders) {
 
   rt_data %>%
     select(id, pubchem.smiles.isomeric) %>%
-    write_tsv("temp.txt", col_names = FALSE)
+    write_tsv("tempiso.txt", col_names = FALSE)
 
   # perform standardization ----------------------------------------------------
-  system("python3 scripts/Python/standardize.py temp.txt")
+  system("python3 scripts/Python/standardize.py tempiso.txt")
 
   # read standarized smiles ----------------------------------------------------
-  smiles_isomeric_std <- read_tsv("temp.txt_standardized", col_names = FALSE)
-  smiles_isomeric_failed <- read_tsv("temp.txt_failed", col_names = FALSE)
+  smiles_isomeric_std <- read_tsv("tempiso.txt_standardized", col_names = FALSE)
+  smiles_isomeric_failed <- read_tsv("tempiso.txt_failed", col_names = FALSE)
 
   # check if it contains data and rename column names --------------------------
   if(nrow(smiles_isomeric_std) > 0) {
@@ -199,9 +199,9 @@ for(data_folder in data_folders) {
                                          smiles_isomeric_failed)
 
   # remove temp files ----------------------------------------------------------
-  file.remove("temp.txt")
-  file.remove("temp.txt_standardized")
-  file.remove("temp.txt_failed")
+  file.remove("tempiso.txt")
+  file.remove("tempiso.txt_standardized")
+  file.remove("tempiso.txt_failed")
 
   # ============================================================================
   # read and standardize meta data
