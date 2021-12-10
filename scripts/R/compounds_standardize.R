@@ -42,6 +42,11 @@ for(data_folder in data_folders) {
   rt_data_file <- list.files(data_folder,
                              pattern = "_rtdata.txt$",
                              full.names = TRUE)
+  
+  if (length(rt_data_file) == 0){
+    warning("no rtdata file exists for ", data_folder, ", skipping")
+    next
+  }
 
   rt_data <- read_tsv(rt_data_file,
                       col_types = cols(id = col_character(),
