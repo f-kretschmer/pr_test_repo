@@ -26,7 +26,7 @@ jobs:
     - name: Get new/changed datasets
       id: filesfolders
       shell: bash {0}
-      run: echo "::set-output name=files::$(for f in ${{ steps.files.outputs.all }}; do basename $(dirname $f); done | sort | uniq | tr '\n' ' ')"
+      run: echo "::set-output name=files::$(for f in ${{ steps.files.outputs.all }}; do basename $(dirname $f); done | grep -E '^[0-9]+$' | sort | uniq | tr '\n' ' ')"
 
     - name: Pyton dependencies
       run: pip install pubchempy
