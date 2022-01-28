@@ -50,11 +50,13 @@ for(data_folder in data_folders) {
   # ============================================================================
   # gradient
   # ============================================================================
-  gradient_table <- read_tsv(paste0(data_folder, "/", basename(data_folder), "_gradient.txt")) %>% 
-    filter(!is.na(`t [min]`))
-  
-  if(nrow(gradient_table) > 0) {
-    
+  gradient_file <- paste0(data_folder, "/", basename(data_folder), "_gradient.txt")
+  if (file.exists(gradient_file))
+    gradient_table <- read_tsv(gradient_file) %>% filter(!is.na(`t [min]`))
+  else
+    gradient_table <- NULL
+  if(!is.null(gradient_table) && nrow(gradient_table) > 0) {
+
     maxrtime <- max(gradient_table$`t [min]`)
     
     gradient_plot <- gradient_table %>%
