@@ -34,13 +34,6 @@ jobs:
     - name: Setup R
       uses: r-lib/actions/setup-r@v1
 
-    - name: Use cached R packages if possible
-      uses: actions/cache@v2
-      with:
-        path: ${{ env.R_LIBS_USER }}
-        key: rdeps-1-${{ hashFiles('scripts/R/dependencies.R') }}
-        restore-keys: rdeps-1-
-
     - name: Set java version
       run: echo ("JAVA_HOME=" + $Env:JAVA_HOME_13_X64) >> $env:GITHUB_ENV
 
