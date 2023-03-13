@@ -37,9 +37,9 @@ def print_stats(stats_raw, stats_processed, exist):
                  'report canonical',
                  'report isomeric']:
         if info in exist:
-            print('✓ ' + info)
+            print(':heavy_check_mark: ' + info)
         else:
-            print('✗ ' + info)
+            print(':x: ' + info)
 
 
 def check_dataset(dataset):

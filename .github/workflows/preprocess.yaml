@@ -45,6 +45,9 @@ jobs:
     - name: Pyton dependencies
       run: pip install -r scripts/Python/requirements.txt
 
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+
     - name: Set java version
       run: echo ("JAVA_HOME=" + $Env:JAVA_HOME_13_X64) >> $env:GITHUB_ENV
 
