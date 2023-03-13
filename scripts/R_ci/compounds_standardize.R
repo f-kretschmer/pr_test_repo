@@ -26,7 +26,7 @@
 library(tidyverse)
 library(rcdk)
 library(rinchi)
-source("scripts/R_ci/XX_functions.R")
+source("scripts/R_ci/helper_functions.R")
 
 # ==============================================================================
 # read the data and create tibble for data analysis
@@ -36,6 +36,8 @@ data_folders <- file.path('raw_data', commandArgs(trailingOnly=TRUE))
 
 # read data  and perform standardization ----------------------------------------
 for(data_folder in data_folders) {
+
+  cat(paste(Sys.time(), "processing", data_folder, "\n"))
 
   # ============================================================================
   # read and standardize compound data
@@ -109,17 +111,17 @@ for(data_folder in data_folders) {
       nrow(rt_data %>% filter(is.na(pubchem.smiles.canonical.std) & !is.na(pubchem.smiles.canonical))), "\n")
 
   rt_data %>%
-    filter(is.na(pubchem.smiles.canonical.std) & !is.na(pubchem.smiles.canonical)) %>%
+    filter(is.na(pubchem.smiles.canonical.std)) %>%
     select(id, pubchem.smiles.canonical) %>%
-    write_tsv("temp.txt", col_names = FALSE)
+    write_tsv("temp.txt", col_names = FALSE, na = "")
 
   # perform standardization ----------------------------------------------------
   #shell("java -jar scripts/Java/structure-standardization.jar temp.txt")
   system("python3 scripts/Python/standardize.py temp.txt")
 
   # read standarized smiles ----------------------------------------------------
-  smiles_canonical_std <- read_tsv("temp.txt_standardized", col_names = FALSE)
-  smiles_canonical_failed <- read_tsv("temp.txt_failed", col_names = FALSE)
+  smiles_canonical_std <- read_tsv("temp.txt_standardized", col_names = FALSE, show_col_types = FALSE)
+  smiles_canonical_failed <- read_tsv("temp.txt_failed", col_names = FALSE, show_col_types = FALSE)
 
   # check if it contains data and rename column names --------------------------
   if(nrow(smiles_canonical_std) > 0) {
@@ -179,9 +181,8 @@ for(data_folder in data_folders) {
                                          smiles_canonical_failed)
 
   # remove temp files ----------------------------------------------------------
-  file.remove("temp.txt")
-  file.remove("temp.txt_standardized")
-  file.remove("temp.txt_failed")
+  for (temp_file in c("temp.txt", "temp.txt_standardized", "temp.txt_failed"))
+    if (file.exists(temp_file)) file.remove(temp_file)
 
   # ============================================================================
   # standardize isomeric smiles
@@ -193,16 +194,16 @@ for(data_folder in data_folders) {
       nrow(rt_data %>% filter(is.na(pubchem.smiles.isomeric.std) & !is.na(pubchem.smiles.isomeric))), "\n")
 
   rt_data %>%
-    filter(is.na(pubchem.smiles.isomeric.std) & !is.na(pubchem.smiles.isomeric)) %>%
+    filter(is.na(pubchem.smiles.isomeric.std)) %>%
     select(id, pubchem.smiles.isomeric) %>%
-    write_tsv("tempiso.txt", col_names = FALSE)
+    write_tsv("tempiso.txt", col_names = FALSE, na = "")
 
   # perform standardization ----------------------------------------------------
   system("python3 scripts/Python/standardize.py tempiso.txt")
 
   # read standarized smiles ----------------------------------------------------
-  smiles_isomeric_std <- read_tsv("tempiso.txt_standardized", col_names = FALSE)
-  smiles_isomeric_failed <- read_tsv("tempiso.txt_failed", col_names = FALSE)
+  smiles_isomeric_std <- read_tsv("tempiso.txt_standardized", col_names = FALSE, show_col_types = FALSE)
+  smiles_isomeric_failed <- read_tsv("tempiso.txt_failed", col_names = FALSE, show_col_types = FALSE)
 
   # check if it contains data and rename column names --------------------------
   if(nrow(smiles_isomeric_std) > 0) {
@@ -261,9 +262,8 @@ for(data_folder in data_folders) {
                                          smiles_isomeric_failed)
 
   # remove temp files ----------------------------------------------------------
-  file.remove("tempiso.txt")
-  file.remove("tempiso.txt_standardized")
-  file.remove("tempiso.txt_failed")
+  for (temp_file in c("tempiso.txt", "tempiso.txt_standardized", "tempiso.txt_failed"))
+    if (file.exists(temp_file)) file.remove(temp_file)
 
   # ============================================================================
   # read and standardize meta data
@@ -272,7 +272,7 @@ for(data_folder in data_folders) {
                                pattern = "_metadata.txt$",
                                full.names = TRUE)
 
-  meta_data <- read_tsv(meta_data_file)
+  meta_data <- read_tsv(meta_data_file, show_col_types = FALSE)
 
   # ============================================================================
   # write results
@@ -284,60 +284,21 @@ for(data_folder in data_folders) {
     dir.create(result_folder)
   }
 
-  if(nrow(rt_data_canonical_success) > 0) {
+  for (output in list(
+    list(rt_data_canonical_success, paste0(result_folder, "/", basename(data_folder), "_rtdata_canonical_success.txt")),
+    list(rt_data_canonical_failed, paste0(result_folder, "/", basename(data_folder), "_rtdata_canonical_failed.txt")),
+    list(rt_data_isomeric_success, paste0(result_folder, "/", basename(data_folder), "_rtdata_isomeric_success.txt")),
+    list(rt_data_isomeric_failed, paste0(result_folder, "/", basename(data_folder), "_rtdata_isomeric_failed.txt")),
+    list(meta_data, paste0(result_folder, "/", basename(data_folder), "_metadata.txt"))
+    )) {
+      data <- output[[1]]
+      out_file <- output[[2]]
+      if(nrow(data) > 0) {
+        write_tsv(data, out_file, na = "")
+      } else {
+        # file shouldn't exist -> remove
+        if (file.exists(out_file)) file.remove(out_file)
+      }
+    }
 
-    write_tsv(rt_data_canonical_success,
-              paste0(result_folder,
-                     "/",
-                     basename(data_folder),
-                     "_rtdata_canonical_success.txt"),
-              na = "")
-
-  }
-
-  if(nrow(rt_data_canonical_failed) > 0) {
-
-    write_tsv(rt_data_canonical_failed,
-              paste0(result_folder,
-                     "/",
-                     basename(data_folder),
-                     "_rtdata_canonical_failed.txt"),
-              na = "")
-
-  }
-
-  if(nrow(rt_data_isomeric_success) > 0) {
-
-    write_tsv(rt_data_isomeric_success,
-              paste0(result_folder,
-                     "/",
-                     basename(data_folder),
-                     "_rtdata_isomeric_success.txt"),
-              na = "")
-
-  }
-
-  if(nrow(rt_data_isomeric_failed) > 0) {
-
-    write_tsv(rt_data_isomeric_failed,
-              paste0(result_folder,
-                     "/",
-                     basename(data_folder),
-                     "_rtdata_isomeric_failed.txt"),
-              na = "")
-
-  }
-
-  if(nrow(meta_data) > 0) {
-
-    write_tsv(meta_data,
-              paste0(result_folder,
-                     "/",
-                     basename(data_folder),
-                     "_metadata.txt"),
-              na = "")
-
-  }
 }
-
-print(computation_cache_hit_counter)
