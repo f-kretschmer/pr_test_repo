@@ -46,17 +46,8 @@ jobs:
       run: pip install -r scripts/Python/requirements.txt
 
 
-    - name: test comment
-      uses: actions/github-script@v6
-      with:
-        script: |
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: (await exec.getExecOutput('python3 scripts/Python/report.py', '${{ steps.filesfolders.outputs.files }}'.trim().split(' '))).stdout
-          })
-
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
 
     - name: Set java version
       run: echo ("JAVA_HOME=" + $Env:JAVA_HOME_13_X64) >> $env:GITHUB_ENV
