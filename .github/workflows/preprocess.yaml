@@ -54,7 +54,7 @@ jobs:
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: await exec.getExecOutput('python3 scripts/Python/report.py', '${{ steps.filesfolders.outputs.files }}'.trim().split(' ')).stdout
+            body: (await exec.getExecOutput('python3 scripts/Python/report.py', '${{ steps.filesfolders.outputs.files }}'.trim().split(' '))).stdout
           })
 
 
@@ -124,7 +124,7 @@ jobs:
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: await exec.getExecOutput('python3 scripts/Python/report.py', '${{ steps.filesfolders.outputs.files }}'.trim().split(' ')).stdout
+            body: (await exec.getExecOutput('python3 scripts/Python/report.py', '${{ steps.filesfolders.outputs.files }}'.trim().split(' '))).stdout
           })
       continue-on-error: true
 
