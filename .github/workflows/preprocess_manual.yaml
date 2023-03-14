@@ -117,7 +117,7 @@ jobs:
         # Use LFS storage of main repository: no push access to fork LFS storage
         # TODO: change once repository is moved
         git add processed_data raw_data
-        git commit -m "Preprocessing ${{ steps.filesfolders.outputs.files }}" -m "Tasks:
+        git commit -m "Preprocessing ${{ inputs.datasets }}" -m "Tasks:
           - standardize compounds: ${{ inputs.do_standardize }}
           - compute classyfire classes: ${{ inputs.do_classyfire }}
           - compute descriptors: ${{ inputs.do_descriptors }}
@@ -125,18 +125,6 @@ jobs:
           - standardize metadata: ${{ inputs.do_metadata }}"
         git lfs push origin HEAD # first push LFS, otherwise failure because of lfs.url
         git push origin HEAD
-
-    - name: Add comment with report to PR
-      uses: actions/github-script@v6
-      with:
-        script: |
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: (await exec.getExecOutput('python3 scripts/Python/report.py', '${{ steps.filesfolders.outputs.files }}'.trim().split(' '))).stdout
-          })
-      continue-on-error: true
 
     - name: Label as successfully preprocessed
       if: ${{ success() }}
