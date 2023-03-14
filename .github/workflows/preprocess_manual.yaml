@@ -47,8 +47,10 @@ jobs:
       shell: bash {0}
       run: |
         for f in ${{ inputs.datasets }}; do
-          ls -lh raw_data/$f
+          ls -lh raw_data/$f || true
+          ls -lh processed_data/$f || true
         done
+      continue-on-error: true
 
     - name: Pyton dependencies
       run: pip install -r scripts/Python/requirements.txt
