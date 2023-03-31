@@ -5,7 +5,7 @@ on:
     inputs:
       datasets:
         description: 'Datasets to preprocess, separated by space. Example: "0001" "0002" "0044"'
-        required: True
+        required: false
         type: string
       do_standardize:
         description: 'Whether to standardize compounds'
