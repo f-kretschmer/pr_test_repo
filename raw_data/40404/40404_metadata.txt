@@ -1,0 +1,1 @@
+{"colName":"Advanced Chrom. Technol., UltraCore SuperC18","colID":"23","colTemp":"23","colFlow":"23"}
