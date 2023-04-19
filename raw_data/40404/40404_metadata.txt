@@ -1,0 +1,2 @@
+colName,colID,colTemp,colFlow
+Advanced Chrom. Technol., UltraCore SuperC18,1,1,1
