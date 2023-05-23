@@ -1,0 +1,2 @@
+column.name	column.id	column.temperature	column.flowrate	id	eluent.A.h2o	eluent.B.h2o	
+Advanced Chrom. Technol., UltraCore SuperC18	2	2	2	47452	50	50	
