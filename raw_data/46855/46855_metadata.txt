@@ -1,0 +1,7 @@
+column.name	Dikma Technologies, Endeavorsil C18
+column.id	2
+column.temperature	2
+column.flowrate	2
+id	46855
+eluent.A.h2o	50
+eluent.B.h2o	50
