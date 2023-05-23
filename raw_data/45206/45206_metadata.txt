@@ -1,0 +1,6 @@
+colName	Advanced Chrom. Technol., UltraCore SuperPhenylHexyl
+colID	2
+colTemp	2
+colFlow	2
+eluent.A.h2o	22
+eluent.B.h2o	78
