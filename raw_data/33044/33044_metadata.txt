@@ -1,0 +1,2 @@
+column.name	column.id	column.temperature	column.flowrate	column.usp.code	column.length	column.particle.size	id	eluent.A.h2o	eluent.B.h2o	eluent.C.h2o	eluent.A.chcl3	eluent.B.chcl3	eluent.C.chcl3	gradient.start.A	gradient.end.A	gradient.start.B	gradient.end.B	gradient.start.C	gradient.end.C	
+Dikma Technologies, Endeavorsil C18	3	2	2	1	32	1	33044	33	33	33	24	24	52	100	0	100	0	100	0	
