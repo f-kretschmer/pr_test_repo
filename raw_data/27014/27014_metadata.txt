@@ -1,0 +1,2 @@
+column.name	column.id	column.temperature	column.flowrate	column.usp.code	column.length	column.particle.size	id	eluent.A.h2o	eluent.B.h2o	gradient.start.A	gradient.end.A	gradient.start.B	gradient.end.B	
+Advanced Chrom. Technol., UltraCore SuperC18	2	2	2	2	2	2	27014	2	2	2	2	2	2	
