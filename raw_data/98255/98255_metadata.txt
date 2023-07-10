@@ -1,0 +1,2 @@
+column.name	column.id	column.temperature	column.flowrate	column.usp.code	column.length	column.particle.size	id	eluent.A.	eluent.B.	gradient.start.A	gradient.end.A	gradient.start.B	gradient.end.B	
+							98255			0	0	0	0	
