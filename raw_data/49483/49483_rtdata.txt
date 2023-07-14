@@ -1,0 +1,2 @@
+name	pubchem_smiles_isomeric	pubchem_smiles_canonical	rt	id	
+			0	49483_00001	
