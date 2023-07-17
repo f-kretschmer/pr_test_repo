@@ -1,2 +1,3 @@
-column.name	column.id	column.temperature	column.flowrate	column.usp.code	column.length	column.particle.size	id	eluent.A.	eluent.B.	gradient.start.A	gradient.end.A	gradient.start.B	gradient.end.B	
-							964			0	0	0	0	
+version https://git-lfs.github.com/spec/v1
+oid sha256:b3feae456c7ed8a5db41b7757e42c7ef9b3495489c20a400f790db650ca1eee4
+size 217
