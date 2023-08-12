@@ -1,0 +1,26 @@
+columns:
+  name: Advanced Chrom. Technol., UltraCore SuperPhenylHexyl
+  id: '2'
+  temperature: '2'
+  flowrate: '2'
+  usp.code: '2'
+  length: '2'
+  particle.size: '2'
+eluent:
+  A:
+    h2o:
+      value: '2'
+    tribut:
+      value: '2'
+      unit: mM
+  B:
+    h2o:
+      value: '2'
+    tribut:
+      value: '2'
+      unit: mM
+id: 12301
+gradient.start.A: 55
+gradient.end.A: 90
+gradient.start.B: 45
+gradient.end.B: 10
