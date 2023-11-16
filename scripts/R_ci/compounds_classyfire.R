@@ -37,10 +37,17 @@ for(data_folder in data_folders) {
 
   cat(paste(Sys.time(), "processing", data_folder, "\n"))
 
+  # step will be skipped when ".classyfire_done" file is present in folder
+  if(file.exists(file.path(data_folder, ".classyfire_done"))){
+    cat(paste("skipping ", data_folder, "\n"))
+    next
+  }
+
+
   # canconical smiles data -----------------------------------------------------
   # read canonical smiles data
   rt_data_file <- list.files(data_folder,
-                             pattern = "_rtdata_canonical_success.txt$",
+                             pattern = "_rtdata_canonical_success.tsv$",
                              full.names = TRUE)
 
   if(length(rt_data_file) == 1) {
@@ -52,7 +59,10 @@ for(data_folder in data_folders) {
                                                    rt = col_double(),
                                                    smiles.std = col_character(),
                                                    inchi.std = col_character(),
-                                                   inchikey.std = col_character()))
+                                                   inchikey.std = col_character(),
+                                                   comment = col_character()))
+    if (!("comment" %in% names(rt_data_canonical)))
+      rt_data_canonical <- rt_data_canonical %>% add_column(comment=NA)
 
     # perform classification
     classyfire <- map_dfr(rt_data_canonical$inchikey.std, function(x) {
@@ -126,10 +136,11 @@ for(data_folder in data_folders) {
                                                                 rt,
                                                                 smiles.std,
                                                                 inchi.std,
-                                                                inchikey.std), classyfire)
+                                                                inchikey.std,
+                                                                comment), classyfire)
 
     # write results
-    write_tsv(rt_data_canonical,
+    write_tsv(rt_data_canonical %>% relocate(comment, .after = last_col()),
               rt_data_file,
               na = "")
 
@@ -145,7 +156,7 @@ for(data_folder in data_folders) {
   # isomeric smiles data -------------------------------------------------------
   # read isomeric smiles data
   rt_data_file <- list.files(data_folder,
-                             pattern = "_rtdata_isomeric_success.txt$",
+                             pattern = "_rtdata_isomeric_success.tsv$",
                              full.names = TRUE)
 
   if(length(rt_data_file) == 1) {
@@ -157,7 +168,10 @@ for(data_folder in data_folders) {
                                                   rt = col_double(),
                                                   smiles.std = col_character(),
                                                   inchi.std = col_character(),
-                                                  inchikey.std = col_character()))
+                                                  inchikey.std = col_character(),
+                                                  comment = col_character()))
+    if (!("comment" %in% names(rt_data_isomeric)))
+      rt_data_isomeric <- rt_data_isomeric %>% add_column(comment=NA)
 
     # perform classification
     classyfire <- map_dfr(rt_data_isomeric$inchikey.std, function(x) {
@@ -231,10 +245,11 @@ for(data_folder in data_folders) {
                                                               rt,
                                                               smiles.std,
                                                               inchi.std,
-                                                              inchikey.std), classyfire)
+                                                              inchikey.std,
+                                                              comment), classyfire)
 
     # write results
-    write_tsv(rt_data_isomeric,
+    write_tsv(rt_data_isomeric %>% relocate(comment, .after = last_col()),
               rt_data_file,
               na = "")
 

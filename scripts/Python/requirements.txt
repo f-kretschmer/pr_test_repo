@@ -1,3 +1,7 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9cec3a8c55b234438d620e6e4abc69babd336e9f976a96fab47513bc736bfe9f
-size 53
+pandas
+requests
+pubchempy
+zeep
+tabulate
+scikit-learn
+pyyaml

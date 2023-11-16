@@ -37,10 +37,15 @@ for(data_folder in data_folders) {
   cat(paste(Sys.time(), "processing", data_folder, "\n"))
 
   # ============================================================================
+  # convert between TSV and YAML metadata formats (before standardization)
+  # ============================================================================
+  system(paste("python3 scripts/Python/convert_metadata.py", basename(data_folder)))
+
+  # ============================================================================
   # read and standardize meta data
   # ============================================================================
   meta_data_file <- list.files(data_folder,
-                               pattern = "_metadata.txt$",
+                               pattern = "_metadata.tsv$",
                                full.names = TRUE)
 
   if(length(meta_data_file) > 0 && file.exists(meta_data_file)) {
@@ -76,15 +81,21 @@ for(data_folder in data_folders) {
               paste0(result_folder,
                      "/",
                      basename(data_folder),
-                     "_metadata.txt"),
+                     "_metadata.tsv"),
               na = "")
   }
+
+  # ============================================================================
+  # convert between TSV and YAML metadata formats (after standardization)
+  # ============================================================================
+  system(paste("python3 scripts/Python/convert_metadata.py", basename(data_folder)))
+
 
   # ============================================================================
   # read and standardize gradient data
   # ============================================================================
   gradient_data_file <- list.files(data_folder,
-                               pattern = "_gradient.txt$",
+                               pattern = "_gradient.tsv$",
                                full.names = TRUE)
 
   if(length(gradient_data_file) > 0 && file.exists(gradient_data_file)) {
@@ -105,7 +116,22 @@ for(data_folder in data_folders) {
               paste0(result_folder,
                      "/",
                      basename(data_folder),
-                     "_gradient.txt"),
+                     "_gradient.tsv"),
               na = "")
+  }
+
+  # ============================================================================
+  # copy "info" file to processed data folder
+  # ============================================================================
+  info_file <- list.files(data_folder,
+                          pattern = "_info.tsv$",
+                          full.names = TRUE)
+
+  if(length(info_file) > 0 && file.exists(info_file)) {
+    result_folder <- paste0("processed_data/", basename(data_folder))
+    file.copy(info_file, paste0(result_folder,
+                                "/",
+                                basename(data_folder),
+                                "_info.tsv"))
   }
 }

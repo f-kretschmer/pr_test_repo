@@ -23,7 +23,6 @@
 # ==============================================================================
 # load required libraries
 # ==============================================================================
-options(java.parameters = c("-XX:+UseConcMarkSweepGC", "-Xmx8192m")) # more memory for descriptor computation
 library(tidyverse)
 library(rcdk)
 source("scripts/R_ci/helper_functions.R")
@@ -42,10 +41,17 @@ for(data_folder in data_folders) {
 
   cat(paste(Sys.time(), "processing", data_folder, "\n"))
 
+  # step will be skipped when ".descriptors_done" file is present in folder
+  if(file.exists(file.path(data_folder, ".descriptors_done"))){
+    cat(paste("skipping ", data_folder, "\n"))
+    next
+  }
+
+
   # canconical smiles data -----------------------------------------------------
   # read canonical smiles data
   rt_data_file <- list.files(data_folder,
-                             pattern = "_rtdata_canonical_success.txt$",
+                             pattern = "_rtdata_canonical_success.tsv$",
                              full.names = TRUE)
 
 
@@ -105,7 +111,7 @@ for(data_folder in data_folders) {
 
     # write results
     write_tsv(rt_data_canonical,
-              gsub("_rtdata_canonical_success.txt", "_descriptors_canonical_success.txt", rt_data_file),
+              gsub("_rtdata_canonical_success.tsv", "_descriptors_canonical_success.tsv", rt_data_file),
               na = "")
 
     # remove to avoid overlap
@@ -118,7 +124,7 @@ for(data_folder in data_folders) {
   # isomeric smiles data -----------------------------------------------------
   # read isomeric smiles data
   rt_data_file <- list.files(data_folder,
-                             pattern = "_rtdata_isomeric_success.txt$",
+                             pattern = "_rtdata_isomeric_success.tsv$",
                              full.names = TRUE)
 
   if(length(rt_data_file) == 1) {
@@ -177,7 +183,7 @@ for(data_folder in data_folders) {
 
     # write results
     write_tsv(rt_data_isomeric,
-              gsub("_rtdata_isomeric_success.txt", "_descriptors_isomeric_success.txt", rt_data_file),
+              gsub("_rtdata_isomeric_success.tsv", "_descriptors_isomeric_success.tsv", rt_data_file),
               na = "")
 
     # remove to avoid overlap
