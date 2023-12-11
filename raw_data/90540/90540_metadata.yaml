@@ -1,0 +1,20 @@
+columns:
+  name: ''
+  id: ''
+  temperature: ''
+  flowrate: ''
+  usp.code: ''
+  length: ''
+  particle.size: ''
+eluent:
+  A:
+    '':
+      value: ''
+  B:
+    '':
+      value: ''
+id: 90540
+gradient.start.A: 0
+gradient.end.A: 0
+gradient.start.B: 0
+gradient.end.B: 0
