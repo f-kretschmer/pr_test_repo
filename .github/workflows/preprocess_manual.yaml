@@ -90,6 +90,7 @@ jobs:
       shell: Rscript {0}
       run: |
         install.packages("renv")
+        options(renv.config.mran.enabled = FALSE)
         renv::restore()
       # needed for every task
 
