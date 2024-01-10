@@ -87,7 +87,10 @@ jobs:
       # needed for every task
 
     - name: Install and activate renv
-      uses: r-lib/actions/setup-renv@v2
+      shell: Rscript {0}
+      run: |
+        install.packages("renv")
+        renv::restore()
       # needed for every task
 
     - name: Standardize compounds
