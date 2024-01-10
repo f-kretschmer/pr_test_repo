@@ -150,3 +150,7 @@ jobs:
           - standardize metadata: ${{ inputs.do_metadata }}"
         git lfs push origin HEAD # first push LFS, otherwise failure because of lfs.url
         git push origin HEAD
+
+    - name: Debug with tmate on failure
+      if: ${{ failure() }}
+      uses: mxschmitt/action-tmate@v3
