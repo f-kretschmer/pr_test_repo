@@ -68,10 +68,7 @@ jobs:
           ${{ runner.os }}-renv-
 
     - name: Install and activate renv
-      shell: Rscript {0}
-      run: |
-        install.packages("renv")
-        renv::restore()
+      uses: r-lib/actions/setup-renv@v2
 
     - name: Standardize compounds
       run: Rscript scripts/R_ci/compounds_standardize.R ${{ steps.filesfolders.outputs.files }}
