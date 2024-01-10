@@ -88,14 +88,6 @@ jobs:
           ${{ runner.os }}-renv-
       # needed for every task
 
-    - name: Install renv
-      shell: Rscript {0}
-      run: |
-        install.packages("remotes")
-        remotes::install_version("renv", "1.0.3")
-        options(renv.config.mran.enabled = FALSE)
-      # needed for every task
-
     - name: Activate renv
       shell: Rscript {0}
       run: |

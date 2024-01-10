@@ -1378,6 +1378,14 @@
       "Hash": "227045be9aee47e6dda9bb38ac870d67",
       "Requirements": []
     },
+    "renv": {
+      "Package": "renv",
+      "Version": "1.0.3",
+      "OS_type": null,
+      "NeedsCompilation": "no",
+      "Repository": "CRAN",
+      "Source": "Repository"
+    },
     "reprex": {
       "Package": "reprex",
       "Version": "2.0.2",
