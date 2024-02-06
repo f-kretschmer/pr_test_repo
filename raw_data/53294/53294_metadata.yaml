@@ -1,0 +1,16 @@
+column:
+  name: ANPEL Laboratory Technologies Inc. Athena C18-WP
+  id: 1
+  temperature: 30
+  flowrate: 0.1
+  usp.code: '1'
+  length: 1
+  particle.size: '1'
+eluent:
+  A:
+    h2o: 80
+    acn: 20
+  B:
+    h2o: 20
+    acn: 80
+id: 53294
