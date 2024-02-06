@@ -1,0 +1,14 @@
+column:
+  name: ANPEL Laboratory Technologies Inc. Athena C18
+  id: 56
+  temperature: 23
+  flowrate: 0.2
+  usp.code: '23'
+  length: 54
+  particle.size: '.23'
+eluent:
+  A:
+    h2o: 55
+  B:
+    h2o: 45
+id: 41279
