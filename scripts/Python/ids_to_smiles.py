@@ -65,6 +65,8 @@ if __name__ == '__main__':
             # TODO: for large datasets, find a way to remember where there is no further information to retrieve
             continue
         for id_type, _ in sorted(IDS.items(), key=lambda x: x[1][1]):
+            if id_type not in df.columns.tolist():
+                continue
             id_ = df.loc[i, id_type]
             if not is_na(id_):
                 try:
