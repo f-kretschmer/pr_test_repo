@@ -58,8 +58,14 @@ def get_smiles(id_, id_type):
 
 if __name__ == '__main__':
     in_file = sys.argv[1]
-    df = pd.read_csv(in_file, sep='\t', index_col=0, converters={'pubchem.cid': str})
     changed = False
+    df = pd.read_csv(in_file, sep='\t', index_col=0, converters={'pubchem.cid': str})
+    # add missing columns
+    example_df = pd.read_csv('example/0259_rtdata.tsv', index_col=0)
+    for c in example_df.columns.tolist():
+        if c not in df.columns.tolist():
+            df[c] = None
+            changed = True
     for i, r in df.iterrows():
         if not (is_na(df.loc[i, 'pubchem.smiles.canonical']) or is_na(df.loc[i, 'pubchem.smiles.isomeric'])):
             # TODO: for large datasets, find a way to remember where there is no further information to retrieve
@@ -91,4 +97,5 @@ if __name__ == '__main__':
                     print(i, e)
     if (changed):
         os.rename(in_file, in_file + '.old')
+        # TODO: restore example file column order
         df.to_csv(in_file, sep='\t')
