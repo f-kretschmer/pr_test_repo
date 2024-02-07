@@ -61,7 +61,7 @@ if __name__ == '__main__':
     changed = False
     df = pd.read_csv(in_file, sep='\t', index_col=0, converters={'pubchem.cid': str})
     # add missing columns
-    example_df = pd.read_csv('example/0259_rtdata.tsv', index_col=0)
+    example_df = pd.read_csv('example/0259_rtdata.tsv', sep='\t', index_col=0)
     for c in example_df.columns.tolist():
         if c not in df.columns.tolist():
             df[c] = None
