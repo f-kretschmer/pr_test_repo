@@ -59,7 +59,6 @@ def get_smiles(id_, id_type):
 if __name__ == '__main__':
     in_file = sys.argv[1]
     changed = False
-    # TODO: index not always first column, but always labeled 'id'
     df = pd.read_csv(in_file, sep='\t', index_col='id', converters={'pubchem.cid': str})
     # add missing columns
     example_df = pd.read_csv('example/0259_rtdata.tsv', sep='\t', index_col=0)
