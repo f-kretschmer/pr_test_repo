@@ -15,28 +15,12 @@ on:
         description: 'Whether to compute ClassyFire classes'
         type: boolean
         default: true
-      do_descriptors:
-        description: 'Whether to compute descriptors'
-        type: boolean
-        default: true
-      do_fingerprints:
-        description: 'Whether to compute fingerprints'
-        type: boolean
-        default: true
-      do_metadata:
-        description: 'Whether to standardize metadata'
-        type: boolean
-        default: true
-      do_validation:
-        description: 'Whether to run validation procedures'
-        type: boolean
-        default: true
 
 jobs:
   preprocess:
     name: Preprocess raw data
     # NOTE: on windows as computing of descriptors has a bug on linux right now
-    runs-on: windows-2019
+    runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }} # needed for pulling R packages from github
 
@@ -48,7 +32,6 @@ jobs:
 
 
     - name: List all files for selected datasets
-      shell: bash {0}
       run: |
         for f in ${{ inputs.datasets }}; do
           ls -lh raw_data/$f || true
@@ -56,90 +39,21 @@ jobs:
         done
       continue-on-error: true
 
-    - name: Pyton dependencies
-      run: pip install -r scripts/Python/requirements.txt
-      # needed for every task
-
-    - name: Setup java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '17'
-      # needed for every task
-
-    - name: Set RENV_PATHS_ROOT
-      shell: bash
-      run: |
-        echo "RENV_PATHS_ROOT=${{ runner.temp }}/renv" >> $GITHUB_ENV
-      # needed for every task
-
-    - name: Setup R
-      uses: r-lib/actions/setup-r@v2
-      with:
-        use-public-rspm: true
-        r-version: 4.2.2
-      # needed for every task
-
-    - name: Restore Renv package cache
-      uses: actions/cache@v3
-      with:
-        path: ${{ env.RENV_PATHS_ROOT }}
-        key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-renv-
-      # needed for every task
-
-    - name: Activate renv
-      shell: Rscript {0}
-      run: |
-        options(renv.config.mran.enabled = FALSE)
-        renv::restore()
-      # needed for every task
-
     - name: Standardize compounds
-      run: Rscript scripts/R_ci/compounds_standardize.R ${{ inputs.datasets }}
+      using: 'docker'
+      image: 'Dockerfile'
+      args:
+        - Rscript scripts/R_ci/compounds_standardize.R
+        - ${{ inputs.datasets }}
       if: ${{ inputs.do_standardize }}
 
     - name: Compounds classyfire classes
-      run: Rscript scripts/R_ci/compounds_classyfire.R ${{ inputs.datasets }}
+      using: 'docker'
+      image: 'Dockerfile'
+      args:
+        - Rscript scripts/R_ci/compounds_classyfire.R
+        - ${{ inputs.datasets }}
       if: ${{ inputs.do_classyfire }}
-
-    - name: Compounds descriptors
-      run: Rscript scripts/R_ci/compounds_descriptors.R  ${{ inputs.datasets }}
-      if: ${{ inputs.do_descriptors }}
-
-    - name: Compounds fingerprints
-      run: Rscript scripts/R_ci/compounds_fingerprints.R  ${{ inputs.datasets }}
-      if: ${{ inputs.do_fingerprints }}
-
-    - name: Metadata standardization
-      run: Rscript scripts/R_ci/metadata_standardize.R  ${{ inputs.datasets }}
-      if: ${{ inputs.do_metadata }}
-
-    - name: Generate dataset reports
-      run: Rscript scripts/R_ci/compounds_overview.R ${{ inputs.datasets }}
-
-    - name: Verify that required files are present
-      run: Rscript scripts/R_ci/files_complete.R ${{ inputs.datasets }}
-
-    - name: Update overview table of all datasets
-      run: python3 scripts/Python/datasets_overview.py
-      continue-on-error: true
-
-    - name: QSPR-based validation
-      run: python3 scripts/Python/validation_qspr.py ${{ inputs.datasets }}
-      continue-on-error: true
-      if: ${{ inputs.do_validation }}
-
-    - name: Retention order-based validation for datasets with nominally identical setups
-      run: python3 scripts/Python/validation_order.py --mode same_condition ${{ inputs.datasets }}
-      continue-on-error: true
-      if: ${{ inputs.do_validation }}
-
-    - name: Retention order-based validation for datasets of systematic measurements
-      run: python3 scripts/Python/validation_order.py --mode systematic ${{ inputs.datasets }}
-      continue-on-error: true
-      if: ${{ inputs.do_validation }}
 
     - name: Commit preprocessing
       run: |
