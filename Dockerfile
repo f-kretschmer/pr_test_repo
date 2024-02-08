@@ -1,5 +1,4 @@
 FROM debian:12
-WORKDIR /app
 # install python deps
 RUN apt-get update && apt-get install -y python3-pip python3-venv \
     python3-pandas python3-requests python3-zeep python3-tabulate python3-sklearn python3-yaml
