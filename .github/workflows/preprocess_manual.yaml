@@ -21,8 +21,7 @@ jobs:
     name: Preprocess raw data
     # NOTE: on windows as computing of descriptors has a bug on linux right now
     runs-on: ubuntu-latest
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }} # needed for pulling R packages from github
+    container: fkre/repo_rt_preprocessing:latest
 
     steps:
     - name: Checkout repository
@@ -30,46 +29,10 @@ jobs:
       with:
          lfs: true
 
-
-    - name: List all files for selected datasets
-      run: |
-        for f in ${{ inputs.datasets }}; do
-          ls -lh raw_data/$f || true
-          ls -lh processed_data/$f || true
-        done
-      continue-on-error: true
-
-    - name: Standardize compounds
-      using: 'docker'
-      image: 'Dockerfile'
-      args:
-        - Rscript scripts/R_ci/compounds_standardize.R
-        - ${{ inputs.datasets }}
-      if: ${{ inputs.do_standardize }}
-
-    - name: Compounds classyfire classes
-      using: 'docker'
-      image: 'Dockerfile'
-      args:
-        - Rscript scripts/R_ci/compounds_classyfire.R
-        - ${{ inputs.datasets }}
-      if: ${{ inputs.do_classyfire }}
-
-    - name: Commit preprocessing
-      run: |
-        git config --global user.email 'actions@github.com'
-        git config --global user.name 'Github Actions'
-        # Use LFS storage of main repository: no push access to fork LFS storage
-        # TODO: change once repository is moved
-        git add processed_data raw_data
-        git commit -m "Preprocessing ${{ inputs.datasets }}" -m "Tasks:
-          - standardize compounds: ${{ inputs.do_standardize }}
-          - compute classyfire classes: ${{ inputs.do_classyfire }}
-          - compute descriptors: ${{ inputs.do_descriptors }}
-          - compute fingerprints: ${{ inputs.do_fingerprints }}
-          - standardize metadata: ${{ inputs.do_metadata }}"
-        git lfs push origin HEAD # first push LFS, otherwise failure because of lfs.url
-        git push origin HEAD
+    - run: |
+        pwd
+        ls -ltrh
+        ls -ltrh /github/workspace/
 
     - name: Debug with tmate on failure
       if: ${{ failure() }}
