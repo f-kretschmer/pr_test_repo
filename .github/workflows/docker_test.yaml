@@ -1,0 +1,23 @@
+name: Test preprocessing docker container
+
+on: workflow_dispatch
+
+jobs:
+  dockertest:
+    # NOTE: on windows as computing of descriptors has a bug on linux right now
+    runs-on: ubuntu-latest
+    container:
+      image: fkre/repo_rt_preprocessing:latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }} # needed for pulling R packages from github
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+         lfs: true
+
+   - run: |
+       pwd
+       ls -ltrh
+       ls -ltrh /github/workspace/
