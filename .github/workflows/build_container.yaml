@@ -2,6 +2,8 @@ name: Build and push docker container
 
 on:
   push:
+    branches:
+      - master
     paths:
       # - 'scripts/**' # whole scripts probably too much
       - 'scripts/Python/requirements.txt'
