@@ -36,7 +36,7 @@ jobs:
   preprocess:
     name: Preprocess raw data
     runs-on: ubuntu-latest
-    container: fkre/repo_rt_preprocessing:latest
+    container: ghcr.io/${{ github.actor }}/repo_rt_preprocessing:latest
     defaults:
       run:
         shell: bash
