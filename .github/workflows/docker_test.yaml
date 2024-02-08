@@ -15,9 +15,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
-         lfs: true
+        lfs: true
 
-   - run: |
-       pwd
-       ls -ltrh
-       ls -ltrh /github/workspace/
+    - run: |
+        pwd
+        ls -ltrh
+        ls -ltrh /github/workspace/
