@@ -42,6 +42,9 @@ jobs:
         shell: bash
 
     steps:
+    - name: check renv (1)
+      run: Rscript -e "renv::status()"
+
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
@@ -57,6 +60,9 @@ jobs:
           ls -lh processed_data/$f || true
         done
       continue-on-error: true
+
+    - name: check renv (2)
+      run: Rscript -e "renv::status()"
 
     - name: Standardize compounds
       run: Rscript scripts/R_ci/compounds_standardize.R ${{ inputs.datasets }}
