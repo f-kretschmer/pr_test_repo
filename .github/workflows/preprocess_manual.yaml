@@ -110,6 +110,8 @@ jobs:
       run: |
         git config --global user.email 'actions@github.com'
         git config --global user.name 'Github Actions'
+        # because of dockerized environment, git will otherwise complain about "dubious ownership of directory"
+        git config --global safe.directory '*'
         git add processed_data raw_data
         git commit -m "Preprocessing ${{ inputs.datasets }}" -m "Tasks:
           - standardize compounds: ${{ inputs.do_standardize }}
