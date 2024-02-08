@@ -13,6 +13,7 @@ id	name	formula	rt	smiles.std	status	inchi.std	inchikey.std
 0003_00025	Azelaic acid	C9H16O4	5.3534		missing SMILES		
 0003_00032	lysoPC(16:0/0:0)	C24H50NO7P	11.598		missing SMILES		
 0003_00034	Riboflavin	C17H20N4O6	3.922316667		missing SMILES		
+0003_00037	1-Methyl-L-Histidine	C7H11N3O2	0.407366667		missing SMILES		
 0003_00038	paba	C7H7NO2	1.945866667		missing SMILES		
 0003_00039	Caffeine	C8H10N4O2	3.4563		missing SMILES		
 0003_00040	Adenosine	C10H13N5O4	0.7		missing SMILES		
