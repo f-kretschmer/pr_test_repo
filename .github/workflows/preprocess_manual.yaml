@@ -47,8 +47,10 @@ jobs:
       with:
          lfs: true
 
+    - name: Check for dockerenv file
+      run: (ls /.dockerenv && echo Found dockerenv) || (echo No dockerenv)
+
     - name: List all files for selected datasets
-      shell: bash {0}
       run: |
         for f in ${{ inputs.datasets }}; do
           ls -lh raw_data/$f || true
