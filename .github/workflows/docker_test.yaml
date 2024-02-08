@@ -5,6 +5,7 @@ on: workflow_dispatch
 jobs:
   dockertest:
     # NOTE: on windows as computing of descriptors has a bug on linux right now
+    name: Test docker container
     runs-on: ubuntu-latest
     container:
       image: fkre/repo_rt_preprocessing:latest
