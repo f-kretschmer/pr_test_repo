@@ -1,9 +1,14 @@
 name: Build and push docker container
 
 on:
-  push:                         # TODO: only on "scripts" and "Dockerfile" changes
-    branches:
-      - docker
+  push:
+    paths:
+      # - 'scripts/**' # whole scripts probably too much
+      - 'scripts/Python/requirements.txt'
+      - 'renv.lock'
+      - 'renv/**'
+      - 'Dockerfile'
+      - '.Rprofile'
 
 jobs:
   dockerloginbuildpush:
@@ -18,5 +23,5 @@ jobs:
       - uses: actions/checkout@v3
       - name: Create image from repository
         run: docker build -t ghcr.io/${{ github.actor }}/repo_rt_preprocessing .
-      - name: push image to GitHub Container Registry
+      - name: Push image to GitHub Container Registry
         run: docker push ghcr.io/${{ github.actor }}/repo_rt_preprocessing:latest
