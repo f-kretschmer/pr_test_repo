@@ -15,13 +15,31 @@ on:
         description: 'Whether to compute ClassyFire classes'
         type: boolean
         default: true
+      do_descriptors:
+        description: 'Whether to compute descriptors'
+        type: boolean
+        default: true
+      do_fingerprints:
+        description: 'Whether to compute fingerprints'
+        type: boolean
+        default: true
+      do_metadata:
+        description: 'Whether to standardize metadata'
+        type: boolean
+        default: true
+      do_validation:
+        description: 'Whether to run validation procedures'
+        type: boolean
+        default: true
 
 jobs:
   preprocess:
     name: Preprocess raw data
-    # NOTE: on windows as computing of descriptors has a bug on linux right now
     runs-on: ubuntu-latest
     container: fkre/repo_rt_preprocessing:latest
+    defaults:
+      run:
+        shell: bash
 
     steps:
     - name: Checkout repository
@@ -29,10 +47,73 @@ jobs:
       with:
          lfs: true
 
-    - run: |
-        pwd
-        ls -ltrh
-        ls -ltrh /github/workspace/
+    - name: List all files for selected datasets
+      shell: bash {0}
+      run: |
+        for f in ${{ inputs.datasets }}; do
+          ls -lh raw_data/$f || true
+          ls -lh processed_data/$f || true
+        done
+      continue-on-error: true
+
+    - name: Standardize compounds
+      run: Rscript scripts/R_ci/compounds_standardize.R ${{ inputs.datasets }}
+      if: ${{ inputs.do_standardize }}
+
+    - name: Compounds classyfire classes
+      run: Rscript scripts/R_ci/compounds_classyfire.R ${{ inputs.datasets }}
+      if: ${{ inputs.do_classyfire }}
+
+    - name: Compounds descriptors
+      run: Rscript scripts/R_ci/compounds_descriptors.R  ${{ inputs.datasets }}
+      if: ${{ inputs.do_descriptors }}
+
+    - name: Compounds fingerprints
+      run: Rscript scripts/R_ci/compounds_fingerprints.R  ${{ inputs.datasets }}
+      if: ${{ inputs.do_fingerprints }}
+
+    - name: Metadata standardization
+      run: Rscript scripts/R_ci/metadata_standardize.R  ${{ inputs.datasets }}
+      if: ${{ inputs.do_metadata }}
+
+    - name: Generate dataset reports
+      run: Rscript scripts/R_ci/compounds_overview.R ${{ inputs.datasets }}
+
+    - name: Verify that required files are present
+      run: Rscript scripts/R_ci/files_complete.R ${{ inputs.datasets }}
+
+    - name: Update overview table of all datasets
+      run: python3 scripts/Python/datasets_overview.py
+      continue-on-error: true
+
+    - name: QSPR-based validation
+      run: python3 scripts/Python/validation_qspr.py ${{ inputs.datasets }}
+      continue-on-error: true
+      if: ${{ inputs.do_validation }}
+
+    - name: Retention order-based validation for datasets with nominally identical setups
+      run: python3 scripts/Python/validation_order.py --mode same_condition ${{ inputs.datasets }}
+      continue-on-error: true
+      if: ${{ inputs.do_validation }}
+
+    - name: Retention order-based validation for datasets of systematic measurements
+      run: python3 scripts/Python/validation_order.py --mode systematic ${{ inputs.datasets }}
+      continue-on-error: true
+      if: ${{ inputs.do_validation }}
+
+    - name: Commit preprocessing
+      run: |
+        git config --global user.email 'actions@github.com'
+        git config --global user.name 'Github Actions'
+        git add processed_data raw_data
+        git commit -m "Preprocessing ${{ inputs.datasets }}" -m "Tasks:
+          - standardize compounds: ${{ inputs.do_standardize }}
+          - compute classyfire classes: ${{ inputs.do_classyfire }}
+          - compute descriptors: ${{ inputs.do_descriptors }}
+          - compute fingerprints: ${{ inputs.do_fingerprints }}
+          - standardize metadata: ${{ inputs.do_metadata }}"
+        git lfs push origin HEAD # first push LFS, otherwise failure because of lfs.url
+        git push origin HEAD
 
     - name: Debug with tmate on failure
       if: ${{ failure() }}
