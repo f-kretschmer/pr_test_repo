@@ -36,22 +36,19 @@ jobs:
   preprocess:
     name: Preprocess raw data
     runs-on: ubuntu-latest
-    container: ghcr.io/${{ github.actor }}/repo_rt_preprocessing:latest
+    container:
+      image: ghcr.io/${{ github.actor }}/repo_rt_preprocessing:latest
+      env:
+        RENV_PATHS_LIBRARY: '/renv/library'
     defaults:
       run:
         shell: bash
 
     steps:
-    - name: check renv (1)
-      run: Rscript -e "renv::status()"
-
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
          lfs: true
-
-    - name: Check for dockerenv file
-      run: (ls /.dockerenv && echo Found dockerenv) || (echo No dockerenv)
 
     - name: List all files for selected datasets
       run: |
@@ -61,7 +58,7 @@ jobs:
         done
       continue-on-error: true
 
-    - name: check renv (2)
+    - name: check renv
       run: Rscript -e "renv::status()"
 
     - name: Standardize compounds
