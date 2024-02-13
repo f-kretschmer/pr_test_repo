@@ -15,4 +15,4 @@ RUN R -e "renv::restore()"
 # NOTE: uncomment the next line to create updated renv.lock file
 # RUN R -e "renv::snapshot()"
 # install dependencies for GitHub workflow
-RUN apt-get update && apt-get install -y git git-lfs bash
+RUN apt-get update && apt-get install -y git git-lfs bash unzip curl
