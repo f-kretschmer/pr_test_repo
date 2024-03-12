@@ -14,6 +14,16 @@ def get_new_ids(old_ids):
                       if i > 0 and l.strip() != '' and l.split('\t')[0] not in old_ids])[-1]
     return [str(highest + i + 1).rjust(4, '0') for i in range(len(old_ids))]
 
+def delete_old_ids_in_overview(old_ids):
+    for f in ['raw_data/studies.tsv', 'processed_data/studies.tsv']:
+        lines = list(open(f).readlines())
+        with open(f, 'w') as out:
+            for line in lines:
+                if any(re.match(rf'^{old_id}\s', line) for old_id in old_ids):
+                    pass
+                else:
+                    out.write(line)
+
 def adapt_file(f, old_id, new_id, ignore_contents=False):
     # ID to change is either at the beginning of a line (tsv) or its own key-value line (yaml)
     new_path = re.sub(f'^(.*)(raw|processed)_data/{old_id}/{old_id}_(.*)$',
@@ -43,4 +53,6 @@ if __name__ == '__main__':
             adapt_file(f, old_id, new_id, ignore_contents=f.endswith('.pdf'))
             if exists(f):     # might already have been deleted (e.g., PDF files)
                 remove(f)
+    # remove old IDs from studies (overview) files
+    delete_old_ids_in_overview(old_ids)
     print(' '.join(new_ids))
