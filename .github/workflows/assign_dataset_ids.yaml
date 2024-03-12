@@ -41,7 +41,7 @@ jobs:
         # TODO: change once repository is moved
         git config lfs.url 'https://github.com/f-kretschmer/pr_test_repo.git/info/lfs'
         git add processed_data raw_data
-        git commit -m "[no ci] set IDs for newly submitted datasets: ${{ steps.newids.outputs.ids }}\n\nPreviously ${{ steps.filesfolders.outputs.files }}"
+        git commit -m "[no ci] set IDs for newly submitted datasets: ${{ steps.newids.outputs.ids }}; previously ${{ steps.filesfolders.outputs.files }}"
         git lfs push origin HEAD # first push LFS, otherwise failure because of lfs.url
         git push origin HEAD
 
