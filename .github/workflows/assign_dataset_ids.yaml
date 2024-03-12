@@ -53,7 +53,7 @@ jobs:
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: 'final IDs have been assigned to submitted datasets: ${{ steps.filesfolders.outputs.files }} -> ${{ steps.newids.outputs.ids }}'
+            body: 'final IDs have been assigned to submitted datasets: ${{ steps.filesfolders.outputs.files }} -> ${{ steps.newids.outputs.ids }}\nThis Pull Request can now be merged!'
           })
       continue-on-error: true
 
