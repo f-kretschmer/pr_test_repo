@@ -1,0 +1,16 @@
+column:
+  name: Waters ACQUITY Premier BEH C18
+  id: 2
+  temperature: 30
+  flowrate: 0.1
+  usp.code: L1
+  length: 1
+  particle.size: '1'
+eluent:
+  A:
+    h2o: 80
+    meoh: 21
+  B:
+    h2o: 10
+    meoh: 90
+id: draft_92732
